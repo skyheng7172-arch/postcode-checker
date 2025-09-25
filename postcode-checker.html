@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>邮编配送查询</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background:#f7faff;
+      text-align:center;
+      padding:20px;
+    }
+    h2 { color:#1829A2; }
+    .search-row {
+      margin:20px auto;
+      display:flex;
+      justify-content:center;
+      max-width:400px;
+    }
+    .search-row input {
+      flex:1;
+      padding:10px;
+      font-size:15px;
+      border:1px solid #ccc;
+      border-radius:5px 0 0 5px;
+    }
+    .search-row button {
+      width:30%;
+      padding:10px;
+      font-size:15px;
+      background:#FF7A0E;
+      color:#fff;
+      border:none;
+      border-radius:0 5px 5px 0;
+      cursor:pointer;
+    }
+    .search-row button:hover { background:#e56b0c; }
+    #result {
+      margin-top:15px;
+      font-size:15px;
+      color:#333;
+      text-align:left;
+      max-width:400px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    #result p {
+      border-bottom:1px solid #ddd;
+      padding:8px 0;
+    }
+  </style>
+</head>
+<body>
+  <h2>适耕庄原产地好鲜直送到家！</h2>
+
+  <div class="search-row">
+    <input id="postcodeInput" type="text" placeholder="请输入邮编">
+    <button id="searchBtn">查询</button>
+  </div>
+
+  <div id="result">请输入邮编查询</div>
+
+  <script>
+    // 配送规则数据库
+    const deliveryAreas = {
+      "45400": {
+        location: "Sekinchan, Selangor",
+        delivery: "星期一至星期六送货。",
+        fee: "标准运费 RM20，购物满 RM150 免运费"
+      },
+      "47000": {
+        location: "Petaling Jaya, Selangor",
+        delivery: "星期二至星期六送货。",
+        fee: "标准运费 RM25，购物满 RM200 免运费"
+      },
+      "50000": {
+        location: "Kuala Lumpur",
+        delivery: "星期一至星期六送货。",
+        fee: "标准运费 RM25，购物满 RM180 免运费"
+      },
+      "50450": {
+        location: "Bukit Bintang, Kuala Lumpur",
+        delivery: "星期一至星期六送货。",
+        fee: "标准运费 RM28，购物满 RM200 免运费"
+      }
+    };
+
+    function checkDelivery() {
+      const input = document.getElementById("postcodeInput").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      if (!input) {
+        resultDiv.innerHTML = "<span style='color:red'>请输入邮编。</span>";
+        return;
+      }
+
+      // ✅ 模糊匹配（可显示多个结果）
+      let results = [];
+      for (let key in deliveryAreas) {
+        if (key.startsWith(input)) {
+          const area = deliveryAreas[key];
+          results.push(
+            "<p><b>地点：</b> " + key + " " + area.location + "<br>" +
+            area.delivery + "<br>" +
+            area.fee + "</p>"
+          );
+        }
+      }
+
+      if (results.length > 0) {
+        resultDiv.innerHTML = results.join("");
+      } else {
+        resultDiv.innerHTML = "<span style='color:red'>抱歉，暂不支持该地区的配送。</span>";
+      }
+    }
+
+    document.getElementById("searchBtn").addEventListener("click", checkDelivery);
+    document.getElementById("postcodeInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        checkDelivery();
+      }
+    });
+  </script>
+</body>
+</html>
